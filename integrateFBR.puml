@@ -1,0 +1,28 @@
+@startuml Integrate with FBR
+title Integrate with FBR
+
+actor User
+participant UI
+control Controller
+participant PersistenceHandler
+participant E_Invoicing_Service
+
+User->UI: integrate()
+UI->Controller: integrate()
+
+Controller->PersistenceHandler: getRecords(unintegrated)
+PersistenceHandler-->Controller: records
+
+loop for each record
+
+    Controller->Controller: prepareBody(record)
+    Controller->E_Invoicing_Service: API(body)
+
+    E_Invoicing_Service --> Controller: e-identifier, success
+    
+    opt success
+        Controller->PersistenceHandler: updateTransaction(record, e-identifier, success)
+    end
+end
+
+@enduml
