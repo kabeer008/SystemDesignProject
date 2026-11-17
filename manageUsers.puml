@@ -1,0 +1,53 @@
+@startuml
+
+actor Admin
+participant UI
+
+'user managerial controller
+control Controller              
+participant PersistenceHandler
+
+
+Admin -> UI: manageUsers()
+UI->Controller: manageUsers()
+Controller->PersistenceHandler: getUsers()
+PersistenceHandler-->Controller: users
+Controller-->UI: users
+UI-->Admin: users
+
+alt Admin Clicks "Add User"
+
+    Admin->UI: AddUser()
+    UI-->Admin: form
+    Admin->UI: submit(userData)
+    UI->Controller: addUser(userData)
+
+    Controller->PersistenceHandler: findUser(userData)
+
+    alt User Found
+        Controller-->UI: User Already Exists
+        UI-->Admin: User Already Exists
+
+    else
+        Controller->PersistenceHandler: addUser(userData)
+    end
+
+
+else Admin Clicks "Update"
+
+    Admin->UI: updateUser(user)
+    UI-->Admin: form
+    Admin->UI: submit(userData)
+
+    UI->Controller: updateUser(userData, userId)
+    Controller->PersistenceHandler: updateUser(userData, userId)
+
+else Admin Clicks "Delete"
+
+    Admin->UI:deleteUser(user)
+    UI->Controller: deleteUser(user)
+    Controller->PersistenceHandler: deleteUser(user)
+
+end
+
+@enduml
