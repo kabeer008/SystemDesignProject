@@ -1,0 +1,34 @@
+@startuml
+
+title Process Salaries
+
+actor Admin
+participant UI
+control Controller
+participant PersistenceHandler
+
+Admin->UI: initSalary()
+UI->Controller: initSalary()
+Controller->PersistenceHandler: getEmployees()
+PersistenceHandler-->Controller: employees
+Controller-->UI: employees
+UI-->Admin: employees
+
+Admin->UI: selectEmployee()
+Admin->UI: issueSalary(amount, duration)
+
+UI->Controller: issueSalary(amount, duration)
+Controller->PersistenceHandler: getMoneyAssets()
+PersistenceHandler-->Controller: money assets
+
+alt Money Sufficient
+    Controller->PersistenceHandler: recordSalarySlip(salarySlip)
+    Controller->PersistenceHandler: recordMoneyTransaction(amount, salarySlip)
+
+else
+    Controller-->UI: failure
+    UI-->Admin: failure
+
+end
+
+@enduml

@@ -1,5 +1,7 @@
 @startuml
 
+title Manage Users
+
 actor Admin
 participant UI
 
