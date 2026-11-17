@@ -1,4 +1,5 @@
-@startuml
+@startuml Process Purchase
+title Process Purchase
 
 skinparam sequenceMessageAlign center
 

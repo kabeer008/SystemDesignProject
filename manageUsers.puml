@@ -1,5 +1,4 @@
-@startuml
-
+@startuml Manage User
 title Manage Users
 
 actor Admin
