@@ -1,0 +1,63 @@
+@startuml Handle Claim
+title Handle Claim
+
+actor Manager
+participant UI
+control Controller
+
+Manager->UI: handleClaim()
+UI-->Manager: invoice selection menu
+
+Manager->UI: invoiceFilter(filter)
+UI->Controller: searchInvoice(filter)
+Controller->PersistenceHandler: searchInvoice(filter)
+
+PersistenceHandler-->Controller: invoices
+Controller-->UI: invoices
+UI->Manager: invoices
+
+Manager->UI: viewInvoice(invoice)
+UI-->Manager: invoice view
+Manager->UI: selectInvoice(invoice)
+UI->Controller: selectInvoice(invoice)
+
+loop item in invoice
+    Controller->PersistenceHandler: getInventory(item)
+end
+
+create participant ClaimRecord
+Controller->ClaimRecord: <<create>>
+Controller->ClaimRecord: getClaimParticulars()
+ClaimRecord-->Controller: particulars
+
+Controller-->UI: particulars
+UI-->Manager: selection view, particulars
+
+
+loop for each item
+    Manager->UI: selectItem(item)
+    UI->Controller: selectItem(item)
+
+    create participant ClaimLineItem
+    Controller->ClaimLineItem: <<create>>
+    Controller->ClaimRecord: addItem(lineItem)
+
+    Controller->ClaimRecord: getClaimParitculars()
+    ClaimRecord-->Controller: particulars
+    Controller-->UI: particulars
+    UI-->Manager: render updated particulars
+
+end
+
+Manager->UI: submit(invoice, items)
+UI->Controller: submit(invoice, items)
+Controller->Controller: validate(invoiceInventory, claimRecord)
+Controller->PersistenceHandler: recordClaim(claimRecord)
+
+participant ClaimLineItem
+participant ClaimRecord
+participant PersistenceHandler
+
+
+
+@enduml

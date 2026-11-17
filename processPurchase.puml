@@ -34,7 +34,7 @@ end
 Manager->UI: submit(invoiceData)
 UI->Controller: submit(invoiceData)
 
-Controller->Controller: calculateInvoiceParticulars(invoice)
+Controller->PurchaseInvoice: calculateInvoiceParticulars(invoice)
 Controller->PersistenceHandler: getMoneyAssets()
 PersistenceHandler-->Controller: money assets
 
