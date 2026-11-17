@@ -1,0 +1,43 @@
+@startuml Record Orders
+title Record Orders
+
+actor Manager
+participant UI
+control Controller
+
+Manager->UI: recordOrder()
+UI->Controller: initOrder()
+
+create participant OrderRecord
+Controller->OrderRecord: <<create>>
+
+Controller->PersistenceHandler: getOrderedItems()
+PersistenceHandler-->Controller: ordered items
+
+Controller->PersistenceHandler: getProducts()
+PersistenceHandler-->Controller: products
+
+Controller-->UI: ordered items, products
+
+loop for each item
+    Manager->UI: addItem(product, qty)
+    UI->Controller: addItem(product, quantity)
+
+    create participant OrderLineItem
+    Controller->OrderLineItem: <<create>>
+    Controller->OrderRecord: additem(lineItem)
+
+    Controller-->UI: updated list
+    UI-->Manager: render updated list
+end
+
+Manager->UI: submit(orderRecord)
+UI->Controller: submit(orderRecord)
+
+Controller->PersistenceHandler: recordOrder(order)
+
+participant OrderLineItem
+participant OrderRecord
+participant PersistenceHandler
+
+@enduml

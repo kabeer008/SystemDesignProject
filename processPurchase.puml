@@ -26,6 +26,9 @@ loop for each item
     Controller->PurchaseLineItem: <<create>>
     Controller->PurchaseInvoice: addItem(lineItem)
 
+    Controller-->UI: updated list, updated summary
+    UI-->Manager: render updated list and summary
+
 end
 
 Manager->UI: submit(invoiceData)
@@ -40,8 +43,6 @@ alt Not Sufficient
     UI-->Manager: failure
 
 else
-    Controller->PersistenceHandler: recordMoneyTransaction(money, invoice)
-    Controller->PersistenceHandler: recordPurchaseLineItems(lineItems)
     Controller->PersistenceHandler: recordInvoice(invoice)
 
 end

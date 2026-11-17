@@ -22,7 +22,6 @@ PersistenceHandler-->Controller: money assets
 
 alt Money Sufficient
     Controller->PersistenceHandler: recordSalarySlip(salarySlip)
-    Controller->PersistenceHandler: recordMoneyTransaction(amount, salarySlip)
 
 else
     Controller-->UI: failure
