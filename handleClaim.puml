@@ -14,7 +14,7 @@ Controller->PersistenceHandler: searchInvoice(filter)
 
 PersistenceHandler-->Controller: invoices
 Controller-->UI: invoices
-UI->Manager: invoices
+UI-->Manager: invoices
 
 Manager->UI: viewInvoice(invoice)
 UI-->Manager: invoice view
@@ -51,8 +51,14 @@ end
 
 Manager->UI: submit(invoice, items)
 UI->Controller: submit(invoice, items)
+
 Controller->Controller: validate(invoiceInventory, claimRecord)
-Controller->PersistenceHandler: recordClaim(claimRecord)
+alt not Valid
+    Controller-->UI: failure
+    UI-->Manager: failure
+else
+    Controller->PersistenceHandler: recordClaim(claimRecord)
+end
 
 participant ClaimLineItem
 participant ClaimRecord

@@ -1,0 +1,67 @@
+@startuml Handle Return
+title Handle Return
+
+actor Manager
+participant UI
+control Controller
+
+Manager->UI: handleReturn()
+UI-->Manager: invoice selection menu
+
+Manager->UI: invoiceFilter(filter)
+UI->Controller: searchInvoice(filter)
+Controller->PersistenceHandler: searchInvoice(filter)
+
+PersistenceHandler-->Controller: invoices
+Controller-->UI: invoices
+UI->Manager: invoices
+
+Manager->UI: viewInvoice(invoice)
+UI-->Manager: invoice view
+Manager->UI: selectInvoice(invoice)
+UI->Controller: selectInvoice(invoice)
+
+
+create participant ReturnRecord
+Controller->ReturnRecord: <<create>>
+Controller->ReturnRecord: getReturnParticulars()
+ReturnRecord-->Controller: particulars
+
+Controller-->UI: particulars
+UI-->Manager: selection view, particulars
+
+
+loop for each item
+    Manager->UI: selectItem(item)
+    UI->Controller: selectItem(item)
+
+    create participant ReturnLineItem
+    Controller->ReturnLineItem: <<create>>
+    Controller->ReturnRecord: addItem(lineItem)
+
+    Controller->ReturnRecord: getClaimParitculars()
+    ReturnRecord-->Controller: particulars
+    Controller-->UI: particulars
+    UI-->Manager: render updated particulars
+
+end
+
+Manager->UI: submit(invoice, items)
+UI->Controller: submit(invoice, items)
+
+Controller->PersistenceHandler: getMoneyAssets()
+PersistenceHandler-->Controller: money assets
+
+alt Not Sufficient
+    Controller-->UI: failure
+    UI-->Manager: failure
+else
+    Controller->PersistenceHandler: recordReturn(returnRecord)
+end
+
+participant ReturnLineItem
+participant ReturnRecord
+participant PersistenceHandler
+
+
+@enduml
