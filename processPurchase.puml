@@ -1,0 +1,53 @@
+@startuml
+
+skinparam sequenceMessageAlign center
+
+actor Manager
+participant UI
+control Controller
+
+Manager->UI: initPurchase()
+UI->Controller: initPurchase()
+
+create participant PurchaseInvoice
+Controller->PurchaseInvoice: <<create>>
+
+Controller->PersistenceHandler: getProducts()
+PersistenceHandler-->Controller: products
+Controller-->UI: products
+
+loop for each item
+
+    Manager->UI: addProduct(prod, quantity, prices, taxes)
+    UI->Controller: addProduct(prod, quantity, prices, taxes)
+
+    create participant PurchaseLineItem
+    Controller->PurchaseLineItem: <<create>>
+    Controller->PurchaseInvoice: addItem(lineItem)
+
+end
+
+Manager->UI: submit(invoiceData)
+UI->Controller: submit(invoiceData)
+
+Controller->Controller: calculateInvoiceParticulars(invoice)
+Controller->PersistenceHandler: getMoneyAssets()
+PersistenceHandler-->Controller: money assets
+
+alt Not Sufficient
+    Controller-->UI: failure
+    UI-->Manager: failure
+
+else
+    Controller->PersistenceHandler: recordMoneyTransaction(money, invoice)
+    Controller->PersistenceHandler: recordPurchaseLineItems(lineItems)
+    Controller->PersistenceHandler: recordInvoice(invoice)
+
+end
+
+participant PurchaseLineItem
+participant PurchaseInvoice
+participant PersistenceHandler
+
+
+@enduml
