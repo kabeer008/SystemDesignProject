@@ -1,0 +1,53 @@
+@startuml Process Sales
+title Process Sales
+
+skinparam sequenceMessageAlign center
+
+actor Cashier
+participant UI
+control Controller
+
+Cashier->UI: initSale()
+UI->Controller: initSale()
+
+create participant SalesInvoice
+Controller->SalesInvoice: <<create>>
+
+Controller->PersistenceHandler: getProducts()
+PersistenceHandler-->Controller: products
+Controller-->UI: products
+
+loop for each item
+
+    Cashier->UI: addProduct(product, quantity, prices, taxes)
+    UI->Controller: addProduct(product, quantity, prices, taxes)
+    Controller->PersistenceHandler: getInventory(product)
+    PersistenceHandler-->Controller: prodcut inventory
+
+    alt Not Sufficient Inventory
+        Controller-->UI: failure
+
+    else
+
+        create participant SaleLineItem
+        Controller->SaleLineItem: <<create>>
+        Controller->SalesInvoice: addItem(lineItem)
+
+    end
+
+    Controller-->UI: updated list, updated summary
+    UI-->Cashier: render updated list and summary
+
+end
+
+Cashier->UI: submit(invoiceData)
+UI->Controller: submit(invoiceData)
+
+Controller->PersistenceHandler: recordInvoice(invoice)
+
+participant SaleLineItem
+participant SalesInvoice
+participant PersistenceHandler
+
+
+@enduml

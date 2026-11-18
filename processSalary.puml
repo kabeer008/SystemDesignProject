@@ -1,6 +1,8 @@
 @startuml Process Salaries
 title Process Salaries
 
+skinparam sequenceMessageAlign center
+
 actor Admin
 participant UI
 control Controller

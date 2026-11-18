@@ -1,6 +1,8 @@
 @startuml Handle Claim
 title Handle Claim
 
+skinparam sequenceMessageAlign center
+
 actor Manager
 participant UI
 control Controller

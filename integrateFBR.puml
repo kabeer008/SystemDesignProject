@@ -1,6 +1,8 @@
 @startuml Integrate with FBR
 title Integrate with FBR
 
+skinparam sequenceMessageAlign center
+
 actor User
 participant UI
 control Controller

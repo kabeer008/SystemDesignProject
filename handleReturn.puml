@@ -1,6 +1,8 @@
 @startuml Handle Return
 title Handle Return
 
+skinparam sequenceMessageAlign center
+
 actor Manager
 participant UI
 control Controller

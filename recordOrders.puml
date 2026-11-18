@@ -1,6 +1,8 @@
 @startuml Record Orders
 title Record Orders
 
+skinparam sequenceMessageAlign center
+
 actor Manager
 participant UI
 control Controller

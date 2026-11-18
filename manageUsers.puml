@@ -1,6 +1,8 @@
 @startuml Manage User
 title Manage Users
 
+skinparam sequenceMessageAlign center
+
 actor Admin
 participant UI
 
