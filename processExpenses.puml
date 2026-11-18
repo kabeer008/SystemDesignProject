@@ -1,0 +1,36 @@
+@startuml Process Expenses
+title Process Expenses
+
+skinparam sequenceMessageAlign center
+
+actor Manager
+participant UI
+control Controller
+
+Manager->UI: initExpense()
+UI->Controller: initExpense()
+Controller->PersistenceHandler: getMoneyAssets()
+PersistenceHandler-->Controller: money assets
+
+UI-->Manager: form
+
+Manager->UI: submit(amount, description, category)
+UI->Controller: submit(amount, description, category)
+
+Controller->Controller: isSufficient(amount)
+
+
+alt Not Sufficient
+    Controller-->UI: failure
+    UI-->Manager: failure
+
+else
+    create ExpenseRecord
+    Controller->ExpenseRecord: <<create>>
+    Controller->PersistenceHandler: recordExpense(expense)
+end
+
+participant ExpenseRecord
+participant PersistenceHandler
+
+@enduml
