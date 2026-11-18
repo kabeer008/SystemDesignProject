@@ -1,0 +1,41 @@
+@startuml Generate Alerts
+title Generate Alerts
+
+skinparam sequenceMessageAlign center
+
+actor User
+participant UI
+control Controller
+
+User->UI: initAlters()
+UI-->User: alert choices(low stock and near-expiry)
+
+User->UI: generateAlert(alert)
+UI->Controller: generateAlert(alert)
+
+alt Low Stock Alert
+    Controller->PersistenceHandler: getInventory(low-stock)
+
+else
+    Controller->PersistenceHandler: getInventory(near-expiry)
+
+end
+
+PersistenceHandler-->Controller: desired inventory
+
+loop for each item
+
+    create participant Product
+    Controller->Product: <<create>>
+    Controller->Controller: addItem(product)
+
+end
+
+
+Controller-->UI: products' details
+UI-->User: render products' details
+
+participant Product
+participant PersistenceHandler
+
+@enduml
