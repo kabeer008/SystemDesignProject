@@ -1,0 +1,64 @@
+@startuml Produce Tax Returns
+title Produce Tax Returns
+
+skinparam sequenceMessageAlign center
+
+actor Admin
+participant UI
+control Controller
+participant PersistenceHandler
+
+Admin -> UI: initTaxReturn()
+UI --> Admin: tax return choices (sales tax, income tax, withheld tax)
+
+Admin -> UI: generateTaxReturn(return)
+UI->Controller: generateTaxReturn(return)
+
+alt Sales Tax
+
+    Controller->PersistenceHandler: getInflowSalesTax()
+    PersistenceHandler-->Controller: inflow sales tax
+
+    Controller->PersistenceHandler: getOutflowSalesTax()
+    PersistenceHandler-->Controller: outflow sales tax
+
+    Controller-->UI: inflow sales tax, outflow sales tax, remainder amount
+    UI-->Admin: render details
+
+else Income Tax
+
+    Controller->PersistenceHandler: getWithholdingAdvanceTax()
+    PersistenceHandler-->Controller: withholding advance tax
+
+    Controller->PersistenceHandler: getTotalSales()
+    PersistenceHandler-->Controller: total sale
+
+    Controller->PersistenceHandler: getTotalDiscounts()
+    PersistenceHandler-->Controller: total discounts
+
+    Controller->PersistenceHandler: getTotalPurchases()
+    PersistenceHandler-->Controller: total purchases
+
+    Controller->PersistenceHandler: getTotalInventory()
+    PersistenceHandler-->Controller: total inventory
+
+    Controller->PersistenceHandler: getTotalAdmissibleExpenses()
+    PersistenceHandler-->Controller: total admissible expenses
+
+    Controller->PersistenceHandler: getTotalInadmissibleExpenses()
+    PersistenceHandler-->Controller: total inadmissible expenses    
+
+    Controller-->UI: obtained business details
+    UI-->Admin: render details
+
+else Withheld Tax
+    Controller->PersistenceHandler: getWithheldTaxDetails()
+    PersistenceHandler-->Controller: withheld tax details
+    Controller-->UI: withheld tax details
+    UI-->Admin: render details
+
+end
+
+
+
+@enduml
